@@ -25,6 +25,7 @@ REST API поддерживает следующие рауты.
 вызывает функцию removeContact для работы с json-файлом contacts.json<br/>
 если такой id есть, возвращает json формата {"message": "contact deleted"} и статусом 200<br/>
 если такого id нет, возвращает json с ключом "message": "Not found" и статусом 404<br/>
+
 @ PATCH /api/contacts/:contactId<br/>
 Получает body в json-формате c обновлением любых полей name, email и phone<br/>
 Если body нет, возарщает json с ключом {"message": "missing fields"} и статусом 400<br/>
