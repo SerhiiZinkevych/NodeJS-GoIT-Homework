@@ -2,7 +2,7 @@ const fs = require("fs");
 const { promises: fsPromises } = fs;
 const path = require("path");
 
-const contactsPath = path.join(__dirname, "db/contacts.json");
+const contactsPath = path.join(__dirname, "../../db/contacts.json");
 
 // Получить список всех контактов из файла db/contacts.json
 async function listContacts() {
@@ -18,7 +18,7 @@ async function listContacts() {
 async function getContactById(contactId) {
   try {
     const contacts = await listContacts();
-    return contacts.find((contact) => contact.id === contactId);
+    return contacts.find((contact) => contact.id === contactId) || null;
   } catch (err) {
     console.error(err);
   }
@@ -64,4 +64,30 @@ async function addContact(name, email, phone) {
   }
 }
 
-module.exports = { listContacts, getContactById, addContact, removeContact };
+async function updateContact(contactData) {
+  try {
+    const contacts = await listContacts();
+    const contactToUpdate = await getContactById(contactData.id);
+    if (contactToUpdate) {
+      const updatedContact = Object.assign({}, contactToUpdate, contactData);
+      const filteredList = contacts.filter(
+        (contact) => contact.id !== contactData.id
+      );
+      const newList = [...filteredList, updatedContact];
+      await fsPromises.writeFile(contactsPath, JSON.stringify(newList));
+      return updatedContact;
+    } else {
+      return null;
+    }
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+module.exports = {
+  listContacts,
+  getContactById,
+  addContact,
+  removeContact,
+  updateContact,
+};
