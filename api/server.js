@@ -4,8 +4,7 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 const contactsRouter = require("./contacts/contacts.router");
 
-require("dotenv").config();
-//process.env.PORT || require("dotenv").config();
+(process.env.PORT && process.env.MONGODB_URL) || require("dotenv").config();
 
 module.exports = class ContactsServer {
   constructor() {
