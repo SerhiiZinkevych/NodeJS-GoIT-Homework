@@ -7,16 +7,27 @@ const {
   updateContactById,
 } = require("./contacts.controller");
 
+const {
+  validateId,
+  validateCreateContact,
+  validateUpdateContact,
+} = require("./contacts.validator");
+
 const contactsRouter = Router();
 
 contactsRouter.get("/", getContacts);
 
-contactsRouter.get("/:contactId", getContactById);
+contactsRouter.get("/:contactId", validateId, getContactById);
 
-contactsRouter.post("/", createContact);
+contactsRouter.post("/", validateCreateContact, createContact);
 
-contactsRouter.delete("/:contactId", deleteContactById);
+contactsRouter.delete("/:contactId", validateId, deleteContactById);
 
-contactsRouter.patch("/:contactId", updateContactById);
+contactsRouter.patch(
+  "/:contactId",
+  validateId,
+  validateUpdateContact,
+  updateContactById
+);
 
 module.exports = contactsRouter;
