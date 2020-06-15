@@ -5,7 +5,7 @@ const cors = require("cors");
 const usersRouter = require("./users/users.router");
 const authRouter = require("./auth/auth.router");
 
-(process.env.PORT && process.env.MONGODB_URL && JWT_SECRET) ||
+(process.env.PORT && process.env.MONGODB_URL && process.env.JWT_SECRET) ||
   require("dotenv").config();
 
 module.exports = class UsersServer {
