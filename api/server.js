@@ -2,11 +2,13 @@ const express = require("express");
 const morgan = require("morgan");
 const mongoose = require("mongoose");
 const cors = require("cors");
-const contactsRouter = require("./contacts/contacts.router");
+const usersRouter = require("./users/users.router");
+const authRouter = require("./auth/auth.router");
 
-(process.env.PORT && process.env.MONGODB_URL) || require("dotenv").config();
+(process.env.PORT && process.env.MONGODB_URL && JWT_SECRET) ||
+  require("dotenv").config();
 
-module.exports = class ContactsServer {
+module.exports = class UsersServer {
   constructor() {
     this.server = null;
   }
@@ -30,7 +32,8 @@ module.exports = class ContactsServer {
   }
 
   initRoutes() {
-    this.server.use("/api/contacts", contactsRouter);
+    this.server.use("/users", usersRouter);
+    this.server.use("/auth", authRouter);
   }
 
   async initDatabase() {
