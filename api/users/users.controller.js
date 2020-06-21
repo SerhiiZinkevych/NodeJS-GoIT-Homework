@@ -5,6 +5,9 @@ const imageminJpegtran = require("imagemin-jpegtran");
 const imageminPngquant = require("imagemin-pngquant");
 const path = require("path");
 const { promises: fsPromises } = require("fs");
+const {
+  deleteAvatarFile,
+} = require("../helpers/avatarGenerator/avatarGenerator");
 
 class UsersController {
   constructor() {
@@ -109,6 +112,7 @@ class UsersController {
 
       if (req.file) {
         userData.avatarURL = "images/" + req.file.filename;
+        await deleteAvatarFile(req.user.avatarURL);
       }
 
       const updatedUser = await usersModel.findUserByIdAndUpdate(id, {

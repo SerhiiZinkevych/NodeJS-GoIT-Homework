@@ -33,7 +33,6 @@ async function generateAvatar(req) {
   await fsPromises.copyFile(srcPath, destPath);
   await fsPromises.unlink(srcPath);
 
-  //return req.protocol + "://" + req.headers.host + `/images/${fileName}`;
   return `images/${fileName}`;
 }
 
