@@ -18,7 +18,7 @@ module.exports = class UsersServer {
     this.initMiddlewares();
     this.initRoutes();
     await this.initDatabase();
-    this.startListening();
+    return this.startListening();
   }
 
   initServer() {
@@ -32,6 +32,7 @@ module.exports = class UsersServer {
   }
 
   initRoutes() {
+    this.server.use("/images", express.static("public/images"));
     this.server.use("/users", usersRouter);
     this.server.use("/auth", authRouter);
   }
@@ -50,7 +51,7 @@ module.exports = class UsersServer {
   }
 
   startListening() {
-    this.server.listen(process.env.PORT, () => {
+    return this.server.listen(process.env.PORT, () => {
       console.log("Server started listening on port:", process.env.PORT);
     });
   }

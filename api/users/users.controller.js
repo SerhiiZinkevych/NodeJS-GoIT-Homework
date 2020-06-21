@@ -1,5 +1,10 @@
 const usersModel = require("./users.model");
 const bcrypt = require("bcryptjs");
+const imagemin = require("imagemin");
+const imageminJpegtran = require("imagemin-jpegtran");
+const imageminPngquant = require("imagemin-pngquant");
+const path = require("path");
+const { promises: fsPromises } = require("fs");
 
 class UsersController {
   constructor() {
@@ -89,7 +94,7 @@ class UsersController {
 
   async _updateUserById(req, res, next) {
     try {
-      if (Object.keys(req.body).length === 0) {
+      if (!req.file && Object.keys(req.body).length === 0) {
         return res.status(400).json({ message: "missing fields" });
       }
       //update by id or current user
@@ -100,6 +105,10 @@ class UsersController {
       if (password) {
         const passwordHash = await bcrypt.hash(password, this._costFactor);
         userData.password = passwordHash;
+      }
+
+      if (req.file) {
+        userData.avatarURL = "images/" + req.file.filename;
       }
 
       const updatedUser = await usersModel.findUserByIdAndUpdate(id, {
@@ -118,10 +127,40 @@ class UsersController {
     }
   }
 
+  async minifyImage(req, res, next) {
+    try {
+      if (!req.file) {
+        return next();
+      }
+      const DEST_DIR = "public/images";
+      await imagemin([req.file.path], {
+        destination: DEST_DIR,
+        plugins: [
+          imageminJpegtran(),
+          imageminPngquant({
+            quality: [0.6, 0.8],
+          }),
+        ],
+      });
+
+      const { filename, path: prevPath } = req.file;
+      await fsPromises.unlink(prevPath);
+
+      req.file = {
+        ...req.file,
+        path: path.join(DEST_DIR, filename),
+        destination: DEST_DIR,
+      };
+      next();
+    } catch (err) {
+      next(err);
+    }
+  }
+
   prepareUsersResponse(users) {
     return users.map((user) => {
-      const { _id, subscription, email } = user;
-      return { _id, subscription, email };
+      const { _id, subscription, email, avatarURL } = user;
+      return { _id, subscription, email, avatarURL };
     });
   }
 }

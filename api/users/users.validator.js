@@ -19,7 +19,6 @@ module.exports.validateUpdateUser = (req, res, next) => {
   });
 
   const result = updateUserSchema.validate(req.body);
-  console.log(result);
   if (result.error) {
     return res.status(400).send(result.error);
   }
