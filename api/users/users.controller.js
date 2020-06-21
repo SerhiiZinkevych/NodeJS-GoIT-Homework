@@ -89,6 +89,7 @@ class UsersController {
       if (!deletedUser) {
         throw res.status(404).json({ message: "Not found" });
       }
+      deleteAvatarFile(deletedUser.avatarURL);
       res.status(200).json({ message: "user deleted" });
     } catch (err) {
       next(err);
