@@ -6,11 +6,15 @@ const authRouter = Router();
 
 authRouter.post(
   "/register",
-  AuthValidator.authValidate,
+  AuthValidator.authRegisterValidate,
   AuthController.register
 );
 
-authRouter.post("/login", AuthValidator.authValidate, AuthController.login);
+authRouter.post(
+  "/login",
+  AuthValidator.authLoginValidate,
+  AuthController.login
+);
 
 authRouter.post("/logout", AuthController.authorize, AuthController.logout);
 

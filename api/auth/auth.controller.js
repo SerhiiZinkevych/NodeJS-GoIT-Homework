@@ -2,6 +2,9 @@ const bcrypt = require("bcryptjs");
 const usersModel = require("../users/users.model");
 const jwt = require("jsonwebtoken");
 const { UnauthorizedError } = require("../helpers/errors.constructors");
+const {
+  generateAvatar,
+} = require("../helpers/avatarGenerator/avatarGenerator");
 
 class AuthController {
   constructor() {
@@ -14,7 +17,7 @@ class AuthController {
 
   async _register(req, res, next) {
     try {
-      const { email, password } = req.body;
+      const { email, password, gender } = req.body;
 
       const user = await usersModel.findUserByEmail(email);
       if (user) {
@@ -22,15 +25,23 @@ class AuthController {
       }
 
       const passwordHash = await bcrypt.hash(password, this._costFactor);
+
+      const avatarURL = await generateAvatar(req);
+
       const newUser = await usersModel.create({
         email,
         password: passwordHash,
+        gender,
+        avatarURL,
       });
+
       if (newUser) {
         res.status(201).json({
           user: {
             email: newUser.email,
             subscription: newUser.subscription,
+            gender: newUser.gender,
+            avatarURL: newUser.avatarURL,
           },
         });
       }

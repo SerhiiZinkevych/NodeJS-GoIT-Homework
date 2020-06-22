@@ -4,6 +4,9 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 const usersRouter = require("./users/users.router");
 const authRouter = require("./auth/auth.router");
+const path = require("path");
+const fs = require("fs");
+const { promises: fsPromises } = fs;
 
 (process.env.PORT && process.env.MONGODB_URL && process.env.JWT_SECRET) ||
   require("dotenv").config();
@@ -16,9 +19,10 @@ module.exports = class UsersServer {
   async start() {
     this.initServer();
     this.initMiddlewares();
+    this.initImagesFolder();
     this.initRoutes();
     await this.initDatabase();
-    this.startListening();
+    return this.startListening();
   }
 
   initServer() {
@@ -32,8 +36,22 @@ module.exports = class UsersServer {
   }
 
   initRoutes() {
+    this.server.use("/images", express.static("public/images"));
     this.server.use("/users", usersRouter);
     this.server.use("/auth", authRouter);
+  }
+
+  async initImagesFolder() {
+    try {
+      const imgPath = path.join(__dirname, "../public/images");
+      fs.exists(imgPath, (isExists) => {
+        if (!isExists) {
+          fsPromises.mkdir(imgPath, { recursive: true });
+        }
+      });
+    } catch (err) {
+      console.error(err);
+    }
   }
 
   async initDatabase() {
@@ -50,7 +68,7 @@ module.exports = class UsersServer {
   }
 
   startListening() {
-    this.server.listen(process.env.PORT, () => {
+    return this.server.listen(process.env.PORT, () => {
       console.log("Server started listening on port:", process.env.PORT);
     });
   }

@@ -5,6 +5,8 @@ const mongoosePaginate = require("mongoose-paginate-v2");
 const userSchema = new Schema({
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
+  gender: { type: String, enum: ["male", "female"], required: true },
+  avatarURL: { type: String, required: false },
   subscription: {
     type: String,
     enum: ["free", "pro", "premium"],
