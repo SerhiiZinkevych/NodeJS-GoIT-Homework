@@ -158,9 +158,6 @@ class AuthController {
       subject: "Please verify your account",
       html: `<a href="${process.env.HOST_NAME}/auth/verify/${token}">Click this link to verify your account</a>`,
     };
-    console.log(
-      `<a href="${process.env.HOST_NAME}/auth/verify/${token}">Click this link to verify your account</a>`
-    );
     sgMail.send(msg);
   }
 }
