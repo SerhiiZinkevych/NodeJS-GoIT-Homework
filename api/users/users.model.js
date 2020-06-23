@@ -13,6 +13,7 @@ const userSchema = new Schema({
     default: "free",
   },
   token: { type: String, required: false },
+  verificationToken: { type: String, required: false },
 });
 
 userSchema.statics.findUserByIdAndUpdate = findUserByIdAndUpdate;
