@@ -133,7 +133,7 @@ class AuthController {
         verificationToken: token,
       });
       if (!userToVerify) {
-        res.status(404).json({ message: "User not found" });
+        return res.status(404).json({ message: "User not found" });
       }
       const updatedUser = await usersModel.findUserByIdAndUpdate(
         userToVerify._id,
@@ -142,9 +142,9 @@ class AuthController {
         }
       );
       if (!updatedUser) {
-        res.status(500).send("Internal server error");
+        return res.status(500).send("Internal server error");
       }
-      res.status(200).send();
+      return res.status(200).send("Verification successful!");
     } catch (err) {
       next(err);
     }
