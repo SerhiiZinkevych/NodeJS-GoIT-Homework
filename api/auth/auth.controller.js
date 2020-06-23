@@ -6,7 +6,6 @@ const {
   generateAvatar,
 } = require("../helpers/avatarGenerator/avatarGenerator");
 const { v4: uuidv4 } = require("uuid");
-const os = require("os");
 
 class AuthController {
   constructor() {
@@ -156,9 +155,12 @@ class AuthController {
     const msg = {
       to: email,
       from: "zinkevych@gmail.com",
-      subject: "Please verify your account - " + os.hostname(),
-      html: `<a href="http://localhost:3000/auth/verify/${token}">Click this link to verify your account</a>`,
+      subject: "Please verify your account",
+      html: `<a href="${process.env.HOST_NAME}/auth/verify/${token}">Click this link to verify your account</a>`,
     };
+    console.log(
+      `<a href="${process.env.HOST_NAME}/auth/verify/${token}">Click this link to verify your account</a>`
+    );
     sgMail.send(msg);
   }
 }
